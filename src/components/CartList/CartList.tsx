@@ -24,12 +24,6 @@ const saleTypeLabel: Record<SaleType, string> = {
   inviteTourist: 'Invitación turista',
 };
 
-const currencyLabel: Record<Currency, string> = {
-  EUR: 'EUR',
-  USD: 'USD',
-  GBP: 'GBP',
-};
-
 export default function CartList() {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -77,15 +71,11 @@ export default function CartList() {
   );
 
   if (items.length === 0) {
-    return (
-      <View style={styles.emptyState}>
-        <Text>Carro vacío</Text>
-      </View>
-    );
+    return <View />;
   }
 
   return (
-    <View style={styles.container}>
+    <View testID="cart-list" style={styles.container}>
       <View style={styles.footer}>
         <View style={styles.footerRow}>
           <Pressable
@@ -110,6 +100,7 @@ export default function CartList() {
               valueField="value"
               style={styles.saleTypeDropdown}
               maxHeight={300}
+              dropdownPosition="top"
               value={saleType}
               onChange={item => {
                 dispatch(setSaleType(item.value));
@@ -119,32 +110,21 @@ export default function CartList() {
           </View>
         </View>
 
-        <View style={styles.equivalentsContainer}>
-          <Text>
-            {equivalents
-              .map(
-                ({ c, v }) => `${v.toFixed(0)} ${c === 'GBP' ? 'Libras' : c}`,
-              )
-              .join(' | ')}
-          </Text>
-        </View>
-
-        <View style={styles.currencyDropdownContainer}>
-          <Dropdown
-            placeholder="Select an option..."
-            data={(['EUR', 'USD', 'GBP'] as Currency[]).map(c => ({
-              label: currencyLabel[c],
-              value: c,
-            }))}
-            labelField="label"
-            valueField="value"
-            style={styles.currencyDropdown}
-            maxHeight={300}
-            value={currency}
-            onChange={item => {
-              dispatch(setCurrency(item.value));
-            }}
-          />
+        <View style={styles.currencyContainer}>
+          {equivalents.map(({ c, v }) => {
+            const label = `${v.toFixed(0)} ${c === 'GBP' ? 'Libras' : c}`;
+            return (
+              <Pressable
+                key={c}
+                onPress={() => dispatch(setCurrency(c))}
+                accessibilityRole="button"
+                accessibilityLabel={`Change currency to ${c}`}
+                style={styles.currencyButton}
+              >
+                <Text>{label}</Text>
+              </Pressable>
+            );
+          })}
         </View>
       </View>
     </View>

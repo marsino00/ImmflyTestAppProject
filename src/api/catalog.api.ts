@@ -38,3 +38,17 @@ export async function fetchProducts(): Promise<Product[]> {
   if (!res.ok) throw new Error('Error cargando productos');
   return res.json();
 }
+export async function doPay(payload: {
+  items: { id: number; qty: number }[];
+  seat: { row: number; seat: string };
+  split: { cash: number; card: number };
+  currency: string;
+}) {
+  const res = await fetch(`${BASE_URL}/pay`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('Error en el pago');
+  return res.json() as Promise<{ ok: boolean; message: string }>;
+}

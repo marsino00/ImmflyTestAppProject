@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CatalogPage should render CategoryAccordionList and CartList when data is loaded without errors 1`] = `
+<View
+  style={{}}
+>
+  <View
+    testID="mock-category-accordion-list"
+  />
+  <View
+    testID="mock-cart-list"
+  />
+</View>
+`;

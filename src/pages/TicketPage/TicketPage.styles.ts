@@ -11,12 +11,10 @@ export const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: '800',
   },
-  headerSubtitle: {
-    color: '#6B7280',
-  },
+
   listContent: {
     paddingHorizontal: 16,
   },
@@ -34,8 +32,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // borderWidth: 5,
-    // flex: 1,
   },
   totalContainer: {
     alignItems: 'flex-end',
@@ -56,8 +52,9 @@ export const styles = StyleSheet.create({
   payButton: {
     flex: 1,
     backgroundColor: '#111827',
-    height: 72,
+    height: 150,
     borderRadius: 14,
+    gap: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,97 +1,100 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Immfly Test App
 
-# Getting Started
+React Native implementation of the Immfly technical exercise. The app guides a crew member through browsing the onboard catalogue, managing a cart, and completing a split payment flow that mirrors the interaction described in the brief.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Core Functionality
 
-## Step 1: Start Metro
+- **Catalogue Screen** (`CatalogPage`)
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+  - Fetches product data from the REST endpoint defined in `.env` (`API_URL`).
+  - Groups products by category and renders them inside an accordion (`CategoryAccordionList`).
+  - Each product card shows the price converted to the currently selected currency and adapts to the active sale type (Retail, Crew, etc.).
+  - Adds items to the global cart, incrementing/decrementing quantities without leaving the screen.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **Cart Summary Bar** (`CartList`)
 
-```sh
-# Using npm
+  - Lives at the bottom of the catalogue screen whenever the cart has content.
+  - Displays the running total with currency conversion, quick sale-type selector, and alternative currency equivalents.
+  - "Pay" button routes to the ticket detail screen while preserving the cart state.
+
+- **Ticket Screen** (`TicketPage`)
+
+  - Lists cart line items with swipe-to-delete support and quantity adjustments via a modal.
+  - Seat selector lets the crew assign row and seat to the order.
+  - Cash and Card actions open the payment split modal to choose between all-cash, all-card, or 50/50 scenarios.
+  - On confirmation the app sends a payment request to `POST /pay`, clears the cart, displays feedback via Toast, and returns to the catalogue.
+
+- **Payment Split Modal** (`PaymentSplitModal`)
+
+  - Presents the common split presets and passes the chosen breakdown back to the ticket page.
+  - Designed to be reusable if new split strategies are needed.
+
+- **State Management (Redux Toolkit)**
+
+  - `catalog.slice` keeps products, exchange rates, sale type, and currency. It exposes the `loadProducts`/`loadRates` async thunks and currency conversion helper.
+  - `cart.slice` stores cart lines with quantity management helpers (`addItem`, `increment`, `decrement`, `removeItem`, `clear`).
+  - Selectors (`selectCartArray`, `selectCartTotal`, etc.) are shared between screens to keep derived data consistent.
+
+- **API Layer** (`src/api/catalog.api.ts`)
+  - Wraps fetch calls to products, exchange rates, and payment submission.
+  - Automatically swaps `localhost` for the Android emulator host `10.0.2.2`.
+
+## Project Structure Highlights
+
+```
+src/
+  api/                // Network calls and typings
+  components/         // Reusable UI pieces (ProductCard, CartList, PaymentSplitModal, etc.)
+  navigation/         // Stack navigator setup
+  pages/              // Feature screens (Catalog, Ticket)
+  store/              // Redux store, slices, typed hooks
+```
+
+Styles are colocated via `<Component>.styles.ts` files to keep JSX clean while staying inside the React Native `StyleSheet` model.
+
+## Environment
+
+Create a `.env` file (already included in the repo) that points to the backend or mock server that implements `/products`, `/rates`, and `/pay` routes.
+
+```
+API_URL=http://localhost:4000
+```
+
+Metro needs to be restarted when the `.env` changes because the app uses `react-native-dotenv` via the Babel plugin (`@env` imports).
+
+## Running the App
+
+```bash
+npm install
+
 npm start
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+### Split Payment API Mocking
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+If you use `json-server` or a similar stub, make sure the `POST /pay` endpoint responds with at least:
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+```json
+{ "ok": true, "message": "Payment accepted" }
 ```
 
-Then, and every time you update your native dependencies, run:
+The Ticket screen relies on this response to show the success toast and reset navigation.
 
-```sh
-bundle exec pod install
+## Testing
+
+The project includes page-level Jest tests in `__tests__/pages` to exercise catalogue loading states and the full ticket payment flow.
+
+```bash
+npm test
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+React Native mocks for `NativeAnimatedHelper`, toast notifications, navigation, and custom components keep tests focused on our business logic.
 
-```sh
-# Using npm
-npm run ios
+## Notable Design Choices
 
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- Redux Toolkit allows deterministic state transitions and shared logic between screens.
+- Currency conversion and sale-type pricing are calculated centrally to avoid duplication.
+- Payment split modal keeps the door open for additional split options or custom amounts.
+- Toast feedback keeps the crew flow fast without leaving the ticket screen.

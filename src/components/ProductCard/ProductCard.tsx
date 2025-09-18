@@ -48,9 +48,11 @@ export default function ProductCard({
       />
 
       <View style={styles.overlay}>
-        <Text style={styles.productName}>{product.name}</Text>
-        <View style={styles.metaRow}>
+        <View style={styles.infoContainer}>
+          <Text style={styles.productName}>{product.name}</Text>
           <Text style={styles.stockText}>{product.stock ?? 0} unidades</Text>
+        </View>
+        <View style={styles.infoContainer}>
           <Text style={styles.priceBadge}>{price.toFixed(2)} €</Text>
         </View>
       </View>
