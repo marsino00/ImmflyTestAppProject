@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, Pressable } from 'react-native';
 import { styles } from './ProductCard.styles';
 import { Product } from '../../api/catalog.api';
+import { useAppSelector } from '../../store/hooks';
 
 type Props = {
   product: Product;
@@ -20,6 +21,8 @@ export default function ProductCard({
   onIncrement,
   onDecrement,
 }: Props) {
+  const { currency } = useAppSelector(s => s.catalog);
+
   return (
     <Pressable onPress={() => onAdd(product)} style={styles.card}>
       {qty > 0 && (
@@ -53,7 +56,9 @@ export default function ProductCard({
           <Text style={styles.stockText}>{product.stock ?? 0} unidades</Text>
         </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.priceBadge}>{price.toFixed(2)} €</Text>
+          <Text style={styles.priceBadge}>
+            {price.toFixed(2) + ' ' + currency}
+          </Text>
         </View>
       </View>
     </Pressable>

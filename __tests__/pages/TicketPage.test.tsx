@@ -239,7 +239,7 @@ describe('TicketPage', () => {
       type: 'success',
       text1: 'Payment OK',
     });
-    expect(mockNavigate).toHaveBeenCalledWith('Catalog');
+    expect(mockNavigate).toHaveBeenCalledWith('Catálogo');
   });
 
   it('handleSplit failure', async () => {

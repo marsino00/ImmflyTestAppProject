@@ -60,11 +60,11 @@ export const styles = StyleSheet.create({
     minWidth: 120,
   },
   currencyContainer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    marginTop: 8,
   },
   currencyButton: {
     paddingVertical: 6,
@@ -73,5 +73,17 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     backgroundColor: '#f7f7f7',
+  },
+  currencyButtonSelected: {
+    backgroundColor: '#4F46E5',
+    borderColor: '#4F46E5',
+  },
+  currencyButtonText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  currencyButtonTextSelected: {
+    color: 'white',
+    fontWeight: '600',
   },
 });

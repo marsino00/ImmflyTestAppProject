@@ -113,15 +113,27 @@ export default function CartList() {
         <View style={styles.currencyContainer}>
           {equivalents.map(({ c, v }) => {
             const label = `${v.toFixed(0)} ${c === 'GBP' ? 'Libras' : c}`;
+            const isSelected = c === currency;
+
             return (
               <Pressable
                 key={c}
                 onPress={() => dispatch(setCurrency(c))}
                 accessibilityRole="button"
                 accessibilityLabel={`Change currency to ${c}`}
-                style={styles.currencyButton}
+                style={[
+                  styles.currencyButton,
+                  isSelected && styles.currencyButtonSelected,
+                ]}
               >
-                <Text>{label}</Text>
+                <Text
+                  style={[
+                    styles.currencyButtonText,
+                    isSelected && styles.currencyButtonTextSelected,
+                  ]}
+                >
+                  {label}
+                </Text>
               </Pressable>
             );
           })}
