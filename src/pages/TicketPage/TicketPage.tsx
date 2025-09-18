@@ -77,11 +77,19 @@ export default function TicketPage() {
       const result = await doPay(payload);
       dispatch(clear());
       setSplitVisible(false);
-      Toast.show({ type: 'success', text1: result.message });
+      Toast.show({
+        type: 'success',
+        text1: result.message,
+        position: 'bottom',
+      });
       navigation.navigate('Catálogo');
     } catch (err) {
       console.error(err);
-      Toast.show({ type: 'error', text1: 'Error procesando el pago' });
+      Toast.show({
+        type: 'error',
+        text1: 'Error procesando el pago',
+        position: 'bottom',
+      });
     }
   };
 
