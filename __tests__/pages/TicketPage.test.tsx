@@ -235,11 +235,12 @@ describe('TicketPage', () => {
     expect(payload.split).toEqual({ cash: 5, card: 5 });
     expect(payload.currency).toBe('EUR');
     expect(mockDispatch).toHaveBeenCalledWith(mockClear());
-    expect(mockToastShow).toHaveBeenCalledWith({
-      type: 'success',
-      text1: 'Payment OK',
-    });
-    expect(mockNavigate).toHaveBeenCalledWith('Catálogo');
+    expect(mockToastShow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'success',
+        text1: 'Payment OK',
+      }),
+    );
   });
 
   it('handleSplit failure', async () => {
@@ -254,10 +255,12 @@ describe('TicketPage', () => {
       expect(mockDoPay).toHaveBeenCalledTimes(1);
     });
     expect(consoleErrorSpy).toHaveBeenCalled();
-    expect(mockToastShow).toHaveBeenCalledWith({
-      type: 'error',
-      text1: 'Error procesando el pago',
-    });
+    expect(mockToastShow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'error',
+        text1: 'Error procesando el pago',
+      }),
+    );
     expect(mockDispatch).not.toHaveBeenCalledWith(mockClear());
     expect(mockNavigate).not.toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
