@@ -33,6 +33,7 @@ export default function CartList() {
   );
 
   const productsById = useMemo(() => {
+    //assignar el id como key para acceder mas rapido
     const map: Record<number, (typeof products)[number]> = {};
     for (const p of products) map[p.id] = p;
     return map;
@@ -45,6 +46,9 @@ export default function CartList() {
   const totalBaseEUR = useMemo(() => {
     return items.reduce((acc, it) => {
       const p = productsById[it.id];
+      //Busca el precio segun el saleType
+      //Si no lo encuentra, usa el baseEUR del item (por si acaso)
+      //Si no lo encuentra, usa 0 por no romper
       const currentBase =
         p?.prices?.[saleType as keyof typeof p.prices] ?? it.baseEUR ?? 0;
       return acc + currentBase * it.qty;
@@ -62,10 +66,11 @@ export default function CartList() {
   }, [currency]);
 
   const equivalents = useMemo(
+    //Calcula los equivalentes en otras monedas para mostrarlo en los botones
     () =>
-      otherCurrencies.map(c => ({
-        c,
-        v: convert(totalBaseEUR, c, rates),
+      otherCurrencies.map(curr => ({
+        curr: curr,
+        value: convert(totalBaseEUR, curr, rates),
       })),
     [otherCurrencies, totalBaseEUR, rates],
   );
@@ -111,16 +116,18 @@ export default function CartList() {
         </View>
 
         <View style={styles.currencyContainer}>
-          {equivalents.map(({ c, v }) => {
-            const label = `${v.toFixed(0)} ${c === 'GBP' ? 'Libras' : c}`;
-            const isSelected = c === currency;
+          {equivalents.map(({ curr, value }) => {
+            const label = `${value.toFixed(0)} ${
+              curr === 'GBP' ? 'Libras' : curr
+            }`;
+            const isSelected = curr === currency;
 
             return (
               <Pressable
-                key={c}
-                onPress={() => dispatch(setCurrency(c))}
+                key={curr}
+                onPress={() => dispatch(setCurrency(curr))}
                 accessibilityRole="button"
-                accessibilityLabel={`Change currency to ${c}`}
+                accessibilityLabel={`Change currency to ${curr}`}
                 style={[
                   styles.currencyButton,
                   isSelected && styles.currencyButtonSelected,

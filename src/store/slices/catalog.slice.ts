@@ -80,6 +80,7 @@ export const convert = (
   rates?: Rates,
 ) => {
   if (currency === 'EUR') return amountEUR;
+  //1 para evitar nan si rates es undefined
   const rate = rates?.[currency] ?? 1;
   return amountEUR * rate;
 };
@@ -90,8 +91,11 @@ export const selectProductDisplayPrice = (
 ) => {
   const { products, saleType, currency, rates } = state.catalog;
   const p = products.find(x => x.id === productId);
+  //Si no existe el producto, devuelve 0
   if (!p) return 0;
+  //Obtengo el precio segun el saleType
   const baseEUR = (p as any).prices?.[saleType];
+  //Lo convierto a la moneda seleccionada
   return convert(baseEUR, currency, rates);
 };
 

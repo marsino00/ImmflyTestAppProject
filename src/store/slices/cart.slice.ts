@@ -66,11 +66,14 @@ export const selectCartArray = (s: { cart: CartState }) =>
   Object.values(s.cart.items);
 
 export const selectCartCount = (s: { cart: CartState }) =>
+  //acc=acumulator, it=item
+  //Cada vez suma la cantidad del item al acumulador, empezando en 0
   Object.values(s.cart.items).reduce((acc, it) => acc + it.qty, 0);
 
 export const selectCartTotal = (s: RootState) => {
   const { currency, rates } = s.catalog;
   return Object.values(s.cart.items).reduce(
+    //Cada vez suma el acumulador + el precio convertido del item
     (acc, it) => acc + convert(it.baseEUR * it.qty, currency, rates),
     0,
   );

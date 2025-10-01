@@ -38,6 +38,8 @@ export default function CategoryAccordionList({
   const [open, setOpen] = useState<Set<string>>(new Set());
 
   const sections = useMemo(() => {
+    // Transforma la lista de productos en una lista de secciones
+    // agrupadas por categoria
     const map = new Map<string, Product[]>();
     for (const p of products) {
       const key = p.category || 'Otros';
@@ -49,6 +51,7 @@ export default function CategoryAccordionList({
   }, [products]);
 
   const toggle = (title: string) => {
+    //abre el accordion con animacion, si singleOpen es true, cierra los demas
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setOpen(prev => {
       const next = new Set(prev);
